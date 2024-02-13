@@ -1,0 +1,39 @@
+{
+    "version": 2,
+    "env": {
+        "MONGO_CONNECTION_STRING": "mongodb+srv://admin:admin@pups-docs-api.6lrbbil.mongodb.net/",
+        "JWT_SECRET": "njksdi3j@dsadasnji324fd||dsaa_dam.fgEt1312Fmkld",
+        "EMAIL_PASSWORD": "ayjt wvqg klph lrch"
+    },
+    "builds": [
+        {
+            "src": "src/main.ts",
+            "use": "@vercel/node"
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/src/main.ts"
+        }
+    ],
+    "headers": [
+        {
+            "source": "/api/(.*)",
+            "headers": [
+                {
+                    "key": "Access-Control-Allow-Origin",
+                    "value": "*"
+                },
+                {
+                    "key": "Access-Control-Allow-Methods",
+                    "value": "GET, DELETE, PATCH, POST, PUT"
+                },
+                {
+                    "key": "Access-Control-Allow-Headers",
+                    "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+                }
+            ]
+        }
+    ]
+}
