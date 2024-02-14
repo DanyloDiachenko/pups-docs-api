@@ -1,4 +1,18 @@
-import { IsBoolean, IsInt, IsNumber, IsOptional } from 'class-validator';
+import {
+    IsBoolean,
+    IsEnum,
+    IsInt,
+    IsNumber,
+    IsOptional,
+} from 'class-validator';
+
+export enum OrderStatus {
+    Placed = 'placed',
+    MaterialsPurchased = 'purchasingMaterials',
+    InProduction = 'manufacturing',
+    InDelivery = 'delivering',
+    Completed = 'completed',
+}
 
 export class UserOrderDto {
     @IsNumber()
@@ -35,6 +49,10 @@ export class UserOrderDto {
     @IsOptional()
     @IsNumber()
     price: number;
+
+    @IsEnum(OrderStatus)
+    @IsOptional()
+    status: OrderStatus;
 
     @IsOptional()
     @IsNumber()
