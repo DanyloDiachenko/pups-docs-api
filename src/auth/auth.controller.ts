@@ -50,6 +50,31 @@ export class AuthController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Put('update-password')
+    async updatePassword(
+        @Req() req: Request,
+        @Body('password') newPassword: string,
+    ) {
+        if (!newPassword) {
+            throw new BadRequestException('New password is required');
+        }
+
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            throw new BadRequestException('No token provided');
+        }
+
+        const userId = await this.authService.getUserIdFromToken(token);
+        if (!userId) {
+            throw new BadRequestException('Invalid token');
+        }
+
+        await this.authService.updateUserPassword(userId, newPassword);
+
+        return { success: true, message: 'Password updated successfully' };
+    }
+
+    @UseGuards(JwtAuthGuard)
     @UsePipes(new ValidationPipe())
     @HttpCode(200)
     @Put('update-orders')

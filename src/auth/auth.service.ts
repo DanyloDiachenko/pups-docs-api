@@ -56,50 +56,124 @@ export class AuthService {
         };
     }
 
+    async updateUserPassword(userId: string, newPassword: string) {
+        const user = await this.userModel.findById(userId);
+        if (!user) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+        }
+
+        const salt = await genSalt(10);
+        user.passwordHash = await hash(newPassword, salt);
+
+        await user.save();
+    }
+
     async getUserIdFromToken(token: string): Promise<string> {
         try {
-            // Verify the token and decode its payload
             const decoded = await this.jwtService.verifyAsync(token);
-            // Assume the payload contains the user's email as 'email'
             const email = decoded.email;
-            // Find the user by email to get the user ID
+
             const user = await this.findUser(email);
+
             if (!user) {
                 throw new UnauthorizedException(USER_NOT_FOUND_ERROR);
             }
-            return user.id; // Assuming the user document contains the ID as 'id'
+
+            return user.id;
         } catch (error) {
             throw new UnauthorizedException('Invalid token');
         }
     }
 
     async updateUserOrders(userId: string, orderDto: UserOrderDto) {
-        // Find the user by their ID
         const user = await this.userModel.findById(userId);
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found`);
         }
 
-        // Add the new order to the user's orders array
+        this.setOrderPropertiesBasedOnVersion(orderDto);
+
         user.orders.push(orderDto);
 
-        // Save the updated user document back to the database
         await user.save();
 
         return {
             success: true,
             data: user.orders,
-        }; // Optionally, return the updated orders array
+        };
+    }
+
+    private setOrderPropertiesBasedOnVersion(orderDto: UserOrderDto) {
+        const properties = this.getPropertiesBasedOnVersion(
+            orderDto.readyPupsVersion,
+        );
+
+        orderDto.readyPupsVersion = properties.readyPupsVersion;
+        orderDto.capacity = properties.capacity;
+        orderDto.power = properties.power;
+        orderDto.charger = properties.charger;
+        orderDto.isAutoLighter = properties.isAutoLighter;
+        orderDto.usbQuantity = properties.usbQuantity;
+        orderDto.typecQuantity = properties.typecQuantity;
+        orderDto.outletQuantity = properties.outletQuantity;
+        orderDto.armor = properties.armor;
+        orderDto.price = properties.price;
+    }
+
+    private getPropertiesBasedOnVersion(version: number): UserOrderDto {
+        const versionProperties: { [key: number]: UserOrderDto } = {
+            1: {
+                readyPupsVersion: 1,
+                capacity: 50000,
+                power: 250,
+                charger: 5,
+                isAutoLighter: true,
+                usbQuantity: 2,
+                typecQuantity: 0,
+                outletQuantity: 1,
+                armor: true,
+                price: 6291,
+            },
+            1.5: {
+                readyPupsVersion: 1.5,
+                capacity: 50000,
+                power: 250,
+                charger: 5,
+                isAutoLighter: false,
+                usbQuantity: 4,
+                typecQuantity: 0,
+                outletQuantity: 1,
+                armor: true,
+                price: 6451,
+            },
+            2: {
+                readyPupsVersion: 2,
+                capacity: 60000,
+                power: 250,
+                charger: 10,
+                isAutoLighter: false,
+                usbQuantity: 4,
+                typecQuantity: 0,
+                outletQuantity: 1,
+                armor: true,
+                price: 7889,
+            },
+        };
+
+        const properties = versionProperties[version];
+        if (!properties) {
+            throw new Error(`Unsupported readyPupsVersion: ${version}`);
+        }
+
+        return properties;
     }
 
     async getUserOrders(userId: string) {
-        // Find the user by their ID
         const user = await this.userModel.findById(userId).exec();
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found`);
         }
 
-        // Return the user's orders
         return {
             success: true,
             data: user.orders,
