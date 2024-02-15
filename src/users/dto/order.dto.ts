@@ -16,7 +16,7 @@ export enum OrderStatus {
 
 export class UserOrderDto {
     constructor() {
-        this.creationDate = new Date();
+        this.createdAt = new Date();
     }
 
     @IsNumber()
@@ -53,5 +53,5 @@ export class UserOrderDto {
     @IsOptional()
     readyPupsVersion: number;
 
-    creationDate: Date;
+    createdAt?: Date;
 }
