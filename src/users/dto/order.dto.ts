@@ -15,6 +15,10 @@ export enum OrderStatus {
 }
 
 export class UserOrderDto {
+    constructor() {
+        this.creationDate = new Date();
+    }
+
     @IsNumber()
     capacity: number;
 
@@ -48,4 +52,6 @@ export class UserOrderDto {
     @IsNumber()
     @IsOptional()
     readyPupsVersion: number;
+
+    creationDate: Date;
 }
