@@ -138,6 +138,7 @@ export class UsersService {
                 armor: true,
                 price: 6291,
                 status: OrderStatus.Placed,
+                id: Date.now(),
             },
             1.5: {
                 readyPupsVersion: 1.5,
@@ -151,6 +152,7 @@ export class UsersService {
                 armor: true,
                 price: 6451,
                 status: OrderStatus.Placed,
+                id: Date.now(),
             },
             2: {
                 readyPupsVersion: 2,
@@ -164,6 +166,7 @@ export class UsersService {
                 armor: true,
                 price: 7889,
                 status: OrderStatus.Placed,
+                id: Date.now(),
             },
         };
 
@@ -176,10 +179,7 @@ export class UsersService {
     }
 
     async getUserOrders(userId: string) {
-        const user = await this.userModel
-            .findById(userId)
-            .select('_id orders')
-            .exec();
+        const user = await this.userModel.findById(userId).exec();
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found`);
         }
@@ -190,7 +190,7 @@ export class UsersService {
         };
     }
 
-    async deleteUserOrder(userId: string, orderId: string) {
+    async deleteUserOrder(userId: string, orderId: number) {
         const user = await this.userModel.findById(userId).exec();
 
         if (!user) {
@@ -198,7 +198,7 @@ export class UsersService {
         }
 
         const orderIndex = user.orders.findIndex(
-            (order) => order._id === orderId,
+            (order) => order.id === orderId,
         );
         if (orderIndex === -1) {
             throw new NotFoundException(

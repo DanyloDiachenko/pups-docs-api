@@ -113,7 +113,7 @@ export class AuthController {
 
         const userId = await this.usersService.getUserIdFromToken(token);
         const orderId = req.body.orderId;
-        await this.usersService.deleteUserOrder(userId, orderId);
+        await this.usersService.deleteUserOrder(userId, Number(orderId));
 
         return this.usersService.getUserOrders(userId);
     }

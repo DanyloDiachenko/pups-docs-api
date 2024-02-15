@@ -5,6 +5,7 @@ import {
     IsInt,
     IsNumber,
     IsOptional,
+    IsString,
 } from 'class-validator';
 
 export enum OrderStatus {
@@ -49,4 +50,7 @@ export class UserOrderDto extends TimeStamps {
     @IsNumber()
     @IsOptional()
     readyPupsVersion: number;
+
+    @IsNumber()
+    id: number;
 }
