@@ -1,5 +1,6 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
 import { TimeStamps, Base } from '@typegoose/typegoose/lib/defaultClasses';
+import { OrderStatus } from './dto/order.dto';
 
 class Order {
     @prop()
@@ -28,6 +29,9 @@ class Order {
 
     @prop()
     readyPupsVersion: number | null;
+
+    @prop()
+    status: OrderStatus;
 
     @prop()
     createdAt?: Date;
