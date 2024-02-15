@@ -104,20 +104,24 @@ export class UsersService {
     }
 
     private setOrderPropertiesBasedOnVersion(orderDto: UserOrderDto) {
-        const properties = this.getPropertiesBasedOnVersion(
-            orderDto.readyPupsVersion,
-        );
+        if (orderDto.readyPupsVersion) {
+            const properties = this.getPropertiesBasedOnVersion(
+                orderDto.readyPupsVersion,
+            );
 
-        orderDto.readyPupsVersion = properties.readyPupsVersion;
-        orderDto.capacity = properties.capacity;
-        orderDto.power = properties.power;
-        orderDto.charger = properties.charger;
-        orderDto.isAutoLighter = properties.isAutoLighter;
-        orderDto.usbQuantity = properties.usbQuantity;
-        orderDto.typecQuantity = properties.typecQuantity;
-        orderDto.outletQuantity = properties.outletQuantity;
-        orderDto.armor = properties.armor;
-        orderDto.price = properties.price;
+            orderDto.readyPupsVersion = properties.readyPupsVersion;
+            orderDto.capacity = properties.capacity;
+            orderDto.power = properties.power;
+            orderDto.charger = properties.charger;
+            orderDto.isAutoLighter = properties.isAutoLighter;
+            orderDto.usbQuantity = properties.usbQuantity;
+            orderDto.typecQuantity = properties.typecQuantity;
+            orderDto.outletQuantity = properties.outletQuantity;
+            orderDto.armor = properties.armor;
+            orderDto.price = properties.price;
+        }
+
+        return orderDto;
     }
 
     private getPropertiesBasedOnVersion(version: number): UserOrderDto {
