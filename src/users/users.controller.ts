@@ -77,19 +77,16 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @UsePipes(new ValidationPipe())
     @HttpCode(200)
-    @Put('update-orders')
-    async updateOrders(@Req() req: Request, @Body() orderDto: UserOrderDto) {
+    @Put('create-order')
+    async createOrder(@Req() req: Request, @Body() orderDto: UserOrderDto) {
         const token = req.headers.authorization?.split(' ')[1];
-        if (!token) {
-            throw new BadRequestException('No token provided');
-        }
 
         const userId = await this.usersService.getUserIdFromToken(token);
         if (!userId) {
             throw new BadRequestException('Invalid token');
         }
 
-        return this.usersService.updateUserOrders(userId, orderDto);
+        return this.usersService.createUserOrder(userId, orderDto);
     }
 
     @UseGuards(JwtAuthGuard)

@@ -85,7 +85,7 @@ export class UsersService {
         }
     }
 
-    async updateUserOrders(userId: string, orderDto: UserOrderDto) {
+    async createUserOrder(userId: string, orderDto: UserOrderDto) {
         const user = await this.userModel.findById(userId);
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found`);
