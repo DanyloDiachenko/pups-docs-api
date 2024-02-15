@@ -10,6 +10,7 @@ import {
     Req,
     UseGuards,
     Get,
+    Delete,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { UsersService } from './users.service';
@@ -103,7 +104,7 @@ export class AuthController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('delete-order')
+    @Delete('delete-order')
     async deleteUserOrder(@Req() req: Request) {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token) {
@@ -111,7 +112,9 @@ export class AuthController {
         }
 
         const userId = await this.usersService.getUserIdFromToken(token);
+        const orderId = req.body.orderId; // Extract order ID from request body
+        await this.usersService.deleteUserOrder(userId, orderId); // Call service method to delete order
 
-        return this.usersService.getUserOrders(userId);
+        return this.usersService.getUserOrders(userId); // Return updated user orders
     }
 }
