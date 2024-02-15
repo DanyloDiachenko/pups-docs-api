@@ -176,7 +176,10 @@ export class UsersService {
     }
 
     async getUserOrders(userId: string) {
-        const user = await this.userModel.findById(userId).exec();
+        const user = await this.userModel
+            .findById(userId)
+            .select('_id orders')
+            .exec();
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found`);
         }
