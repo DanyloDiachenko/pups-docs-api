@@ -28,6 +28,12 @@ class Order {
 
     @prop()
     readyPupsVersion: number | null;
+
+    @prop()
+    createdAt?: Date;
+
+    @prop()
+    id?: string;
 }
 
 export interface UserModel extends Base {}

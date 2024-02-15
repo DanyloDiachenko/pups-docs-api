@@ -101,4 +101,17 @@ export class AuthController {
 
         return this.usersService.getUserOrders(userId);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('delete-order')
+    async deleteUserOrder(@Req() req: Request) {
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            throw new BadRequestException('No token provided');
+        }
+
+        const userId = await this.usersService.getUserIdFromToken(token);
+
+        return this.usersService.getUserOrders(userId);
+    }
 }

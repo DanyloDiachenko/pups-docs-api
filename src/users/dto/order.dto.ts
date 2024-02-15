@@ -54,4 +54,6 @@ export class UserOrderDto {
     readyPupsVersion: number;
 
     createdAt?: Date;
+
+    id?: string;
 }

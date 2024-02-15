@@ -186,4 +186,30 @@ export class UsersService {
             data: user.orders,
         };
     }
+
+    async deleteUserOrder(userId: string, orderId: string) {
+        const user = await this.userModel.findById(userId).exec();
+
+        if (!user) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+        }
+
+        const orderIndex = user.orders.findIndex(
+            (order) => order.id === orderId,
+        );
+        if (orderIndex === -1) {
+            throw new NotFoundException(
+                `Order with ID ${orderId} not found for user with ID ${userId}`,
+            );
+        }
+
+        user.orders.splice(orderIndex, 1);
+
+        await user.save();
+
+        return {
+            success: true,
+            message: `Order with ID ${orderId} deleted successfully for user with ID ${userId}`,
+        };
+    }
 }
