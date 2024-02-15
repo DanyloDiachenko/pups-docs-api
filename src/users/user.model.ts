@@ -1,8 +1,9 @@
-import { prop, getModelForClass } from '@typegoose/typegoose';
+import { prop } from '@typegoose/typegoose';
 import { TimeStamps, Base } from '@typegoose/typegoose/lib/defaultClasses';
-import { OrderStatus } from './dto/order.dto';
+import { OrderStatus } from './dto/orderStatus';
+import { ObjectId } from 'mongoose';
 
-class Order {
+export class Order extends TimeStamps {
     @prop()
     capacity: number;
 
@@ -35,6 +36,12 @@ class Order {
 
     @prop()
     createdAt?: Date;
+
+    @prop()
+    price: number;
+
+    @prop()
+    _id: ObjectId;
 
     @prop()
     id: number;

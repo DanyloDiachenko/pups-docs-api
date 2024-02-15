@@ -10,7 +10,9 @@ import { UserModel } from './user.model';
 import { genSalt, hash, compare } from 'bcryptjs';
 import { USER_NOT_FOUND_ERROR, WRONG_PASSWORD_ERROR } from './users.constants';
 import { JwtService } from '@nestjs/jwt';
-import { OrderStatus, UserOrderDto } from './dto/order.dto';
+import { OrderStatus } from './dto/orderStatus';
+import { Order } from './user.model';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Injectable()
 export class UsersService {
@@ -85,16 +87,46 @@ export class UsersService {
         }
     }
 
-    async createUserOrder(userId: string, orderDto: UserOrderDto) {
+    async createUserOrder(userId: string, orderDto: CreateOrderDto) {
         const user = await this.userModel.findById(userId);
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found`);
         }
 
-        this.setOrderPropertiesBasedOnVersion(orderDto);
+        const newOrder = new Order();
 
-        user.orders.push(orderDto);
+        if (orderDto.readyPupsVersion) {
+            const properties = this.getPropertiesBasedOnVersion(
+                orderDto.readyPupsVersion,
+            );
 
+            newOrder.readyPupsVersion = properties.readyPupsVersion;
+            newOrder.capacity = properties.capacity;
+            newOrder.power = properties.power;
+            newOrder.charger = properties.charger;
+            newOrder.isAutoLighter = properties.isAutoLighter;
+            newOrder.usbQuantity = properties.usbQuantity;
+            newOrder.typecQuantity = properties.typecQuantity;
+            newOrder.outletQuantity = properties.outletQuantity;
+            newOrder.armor = properties.armor;
+            newOrder.price = properties.price;
+            newOrder.status = properties.status;
+            newOrder.id = properties.id;
+        } else {
+            newOrder.capacity = orderDto.capacity;
+            newOrder.power = orderDto.power;
+            newOrder.charger = orderDto.charger;
+            newOrder.isAutoLighter = orderDto.isAutoLighter;
+            newOrder.usbQuantity = orderDto.usbQuantity;
+            newOrder.typecQuantity = orderDto.typecQuantity;
+            newOrder.outletQuantity = orderDto.outletQuantity;
+            newOrder.armor = orderDto.armor;
+            newOrder.price = orderDto.price;
+            newOrder.status = orderDto.status;
+            newOrder.id = orderDto.id;
+        }
+
+        user.orders.push(newOrder);
         await user.save();
 
         return {
@@ -103,29 +135,8 @@ export class UsersService {
         };
     }
 
-    private setOrderPropertiesBasedOnVersion(orderDto: UserOrderDto) {
-        if (orderDto.readyPupsVersion) {
-            const properties = this.getPropertiesBasedOnVersion(
-                orderDto.readyPupsVersion,
-            );
-
-            orderDto.readyPupsVersion = properties.readyPupsVersion;
-            orderDto.capacity = properties.capacity;
-            orderDto.power = properties.power;
-            orderDto.charger = properties.charger;
-            orderDto.isAutoLighter = properties.isAutoLighter;
-            orderDto.usbQuantity = properties.usbQuantity;
-            orderDto.typecQuantity = properties.typecQuantity;
-            orderDto.outletQuantity = properties.outletQuantity;
-            orderDto.armor = properties.armor;
-            orderDto.price = properties.price;
-        }
-
-        return orderDto;
-    }
-
-    private getPropertiesBasedOnVersion(version: number): UserOrderDto {
-        const versionProperties: { [key: number]: UserOrderDto } = {
+    private getPropertiesBasedOnVersion(version: number): CreateOrderDto {
+        const versionProperties: { [key: number]: CreateOrderDto } = {
             1: {
                 readyPupsVersion: 1,
                 capacity: 50000,

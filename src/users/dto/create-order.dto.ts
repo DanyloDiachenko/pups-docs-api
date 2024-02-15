@@ -5,18 +5,10 @@ import {
     IsInt,
     IsNumber,
     IsOptional,
-    IsString,
 } from 'class-validator';
+import { OrderStatus } from './orderStatus';
 
-export enum OrderStatus {
-    Placed = 'placed',
-    MaterialsPurchased = 'purchasingMaterials',
-    InProduction = 'manufacturing',
-    InDelivery = 'delivering',
-    Completed = 'completed',
-}
-
-export class UserOrderDto extends TimeStamps {
+export class CreateOrderDto extends TimeStamps {
     @IsNumber()
     capacity: number;
 

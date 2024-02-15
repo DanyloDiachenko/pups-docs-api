@@ -15,9 +15,10 @@ import {
 import { Request } from 'express';
 import { UsersService } from './users.service';
 import { AuthDto } from './dto/auth.dto';
-import { UserOrderDto } from './dto/order.dto';
+import { Order } from './user.model';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { ALREADY_REGISTERED_ERROR } from './users.constants';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Controller('users')
 export class AuthController {
@@ -79,7 +80,7 @@ export class AuthController {
     @UsePipes(new ValidationPipe())
     @HttpCode(200)
     @Post('create-order')
-    async createOrder(@Req() req: Request, @Body() orderDto: UserOrderDto) {
+    async createOrder(@Req() req: Request, @Body() orderDto: CreateOrderDto) {
         const token = req.headers.authorization?.split(' ')[1];
 
         const userId = await this.usersService.getUserIdFromToken(token);
@@ -112,7 +113,7 @@ export class AuthController {
         }
 
         const userId = await this.usersService.getUserIdFromToken(token);
-        const orderId = req.body.orderId;
+        const orderId: string = req.body.orderId;
         await this.usersService.deleteUserOrder(userId, Number(orderId));
 
         return this.usersService.getUserOrders(userId);
