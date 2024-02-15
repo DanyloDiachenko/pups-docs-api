@@ -1,3 +1,4 @@
+import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import {
     IsBoolean,
     IsEnum,
@@ -14,11 +15,7 @@ export enum OrderStatus {
     Completed = 'completed',
 }
 
-export class UserOrderDto {
-    constructor() {
-        this.createdAt = new Date();
-    }
-
+export class UserOrderDto extends TimeStamps {
     @IsNumber()
     capacity: number;
 
@@ -52,8 +49,4 @@ export class UserOrderDto {
     @IsNumber()
     @IsOptional()
     readyPupsVersion: number;
-
-    createdAt?: Date;
-
-    _id?: string;
 }
