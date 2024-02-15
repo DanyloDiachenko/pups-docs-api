@@ -195,7 +195,7 @@ export class UsersService {
         }
 
         const orderIndex = user.orders.findIndex(
-            (order) => order.id === orderId,
+            (order) => order._id === orderId,
         );
         if (orderIndex === -1) {
             throw new NotFoundException(

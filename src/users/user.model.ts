@@ -37,7 +37,7 @@ class Order {
     createdAt?: Date;
 
     @prop()
-    id?: string;
+    _id?: string;
 }
 
 export interface UserModel extends Base {}

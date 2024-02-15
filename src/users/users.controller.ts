@@ -112,9 +112,9 @@ export class AuthController {
         }
 
         const userId = await this.usersService.getUserIdFromToken(token);
-        const orderId = req.body.orderId; // Extract order ID from request body
-        await this.usersService.deleteUserOrder(userId, orderId); // Call service method to delete order
+        const orderId = req.body.orderId;
+        await this.usersService.deleteUserOrder(userId, orderId);
 
-        return this.usersService.getUserOrders(userId); // Return updated user orders
+        return this.usersService.getUserOrders(userId);
     }
 }
