@@ -77,7 +77,7 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @UsePipes(new ValidationPipe())
     @HttpCode(200)
-    @Put('create-order')
+    @Post('create-order')
     async createOrder(@Req() req: Request, @Body() orderDto: UserOrderDto) {
         const token = req.headers.authorization?.split(' ')[1];
 
