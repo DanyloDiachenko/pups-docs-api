@@ -12,27 +12,27 @@ import {
     Get,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { AuthService } from './auth.service';
+import { UsersService } from './users.service';
 import { AuthDto } from './dto/auth.dto';
 import { UserOrderDto } from './dto/order.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
-import { ALREADY_REGISTERED_ERROR } from './auth.constants';
+import { ALREADY_REGISTERED_ERROR } from './users.constants';
 
 @Controller('users')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly usersService: UsersService) {}
 
     @UsePipes(new ValidationPipe())
     @Post('register')
     async register(@Body() dto: AuthDto) {
-        const oldUser = await this.authService.findUser(dto.email);
+        const oldUser = await this.usersService.findUser(dto.email);
         if (oldUser) {
             throw new BadRequestException(ALREADY_REGISTERED_ERROR);
         }
 
-        await this.authService.createUser(dto);
+        await this.usersService.createUser(dto);
 
-        const token = await this.authService.login(dto.email);
+        const token = await this.usersService.login(dto.email);
 
         return token;
     }
@@ -41,12 +41,12 @@ export class AuthController {
     @HttpCode(200)
     @Post('login')
     async login(@Body() { email, password }: AuthDto) {
-        const { email: userEmail } = await this.authService.validateUser(
+        const { email: userEmail } = await this.usersService.validateUser(
             email,
             password,
         );
 
-        return this.authService.login(userEmail);
+        return this.usersService.login(userEmail);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -64,12 +64,12 @@ export class AuthController {
             throw new BadRequestException('No token provided');
         }
 
-        const userId = await this.authService.getUserIdFromToken(token);
+        const userId = await this.usersService.getUserIdFromToken(token);
         if (!userId) {
             throw new BadRequestException('Invalid token');
         }
 
-        await this.authService.updateUserPassword(userId, newPassword);
+        await this.usersService.updateUserPassword(userId, newPassword);
 
         return { success: true, message: 'Password updated successfully' };
     }
@@ -84,12 +84,12 @@ export class AuthController {
             throw new BadRequestException('No token provided');
         }
 
-        const userId = await this.authService.getUserIdFromToken(token);
+        const userId = await this.usersService.getUserIdFromToken(token);
         if (!userId) {
             throw new BadRequestException('Invalid token');
         }
 
-        return this.authService.updateUserOrders(userId, orderDto);
+        return this.usersService.updateUserOrders(userId, orderDto);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -100,8 +100,8 @@ export class AuthController {
             throw new BadRequestException('No token provided');
         }
 
-        const userId = await this.authService.getUserIdFromToken(token);
+        const userId = await this.usersService.getUserIdFromToken(token);
 
-        return this.authService.getUserOrders(userId);
+        return this.usersService.getUserOrders(userId);
     }
 }

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypegooseModule } from 'nestjs-typegoose';
-import { AuthController } from './auth.controller';
+import { AuthController } from './users.controller';
 import { UserModel } from './user.model';
-import { AuthService } from './auth.service';
+import { UsersService } from './users.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getJWTConfig } from '../configs/jwt.config';
@@ -28,6 +28,6 @@ import { JwtStratagy } from './strategies/jwt.strategy';
         }),
         PassportModule,
     ],
-    providers: [AuthService, JwtStratagy],
+    providers: [UsersService, JwtStratagy],
 })
 export class AuthModule {}

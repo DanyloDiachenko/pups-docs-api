@@ -8,12 +8,12 @@ import { InjectModel } from 'nestjs-typegoose';
 import { AuthDto } from './dto/auth.dto';
 import { UserModel } from './user.model';
 import { genSalt, hash, compare } from 'bcryptjs';
-import { USER_NOT_FOUND_ERROR, WRONG_PASSWORD_ERROR } from './auth.constants';
+import { USER_NOT_FOUND_ERROR, WRONG_PASSWORD_ERROR } from './users.constants';
 import { JwtService } from '@nestjs/jwt';
-import { UserOrderDto } from './dto/order.dto';
+import { OrderStatus, UserOrderDto } from './dto/order.dto';
 
 @Injectable()
-export class AuthService {
+export class UsersService {
     constructor(
         @InjectModel(UserModel)
         private readonly userModel: ModelType<UserModel>,
@@ -133,6 +133,7 @@ export class AuthService {
                 outletQuantity: 1,
                 armor: true,
                 price: 6291,
+                status: OrderStatus.Placed,
             },
             1.5: {
                 readyPupsVersion: 1.5,
@@ -145,6 +146,7 @@ export class AuthService {
                 outletQuantity: 1,
                 armor: true,
                 price: 6451,
+                status: OrderStatus.Placed,
             },
             2: {
                 readyPupsVersion: 2,
@@ -157,6 +159,7 @@ export class AuthService {
                 outletQuantity: 1,
                 armor: true,
                 price: 7889,
+                status: OrderStatus.Placed,
             },
         };
 
