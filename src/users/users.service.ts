@@ -226,4 +226,14 @@ export class UsersService {
             message: `Order with ID ${orderId} deleted successfully for user with ID ${userId}`,
         };
     }
+
+    async getEmailFromToken(token: string): Promise<string> {
+        try {
+            const decoded = await this.jwtService.verifyAsync(token);
+            const email = decoded.email;
+            return email;
+        } catch (error) {
+            throw new UnauthorizedException('Invalid token');
+        }
+    }
 }

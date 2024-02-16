@@ -118,4 +118,20 @@ export class AuthController {
 
         return this.usersService.getUserOrders(userId);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('get-email')
+    async getEmail(@Req() req: Request) {
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            throw new BadRequestException('No token provided');
+        }
+
+        try {
+            const email = await this.usersService.getEmailFromToken(token);
+            return { success: true, email };
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+    }
 }
